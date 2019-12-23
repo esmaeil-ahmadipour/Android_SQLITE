@@ -23,11 +23,11 @@ public class User_DataAccess {
         sqLiteOpenHelper = new SampleDatabaseHelper(context);
     }
 
-    public List<User> getAllUser() {
+    public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
 
         //This Cursor Contains an Query ;
-        //Query Returns :  All Columns in (userColumns) From TableUsers ;
+        // Select All Users From Database ;
         Cursor cursor = database.query(SampleDatabaseHelper.TABLE_USERS, userColumns, null, null, null, null, null);
 
         // cursor.moveToFirst() Check Cursor :  ValidRecord (true) Or InvalidRecord (false) ;
@@ -45,7 +45,53 @@ public class User_DataAccess {
             // cursor.moveToNext() Check Cursor :  Valid Next Record (true : Back to Loop) Or Invalid Next Record (false : Stop Loop And Exit) ;
 
         }
+        cursor.close();
+        return userList;
+    }
 
+    public User getUserById(int userId) {
+
+        //This Cursor Contains an Query ;
+        // Select One User  From Database (With ID From Input Of Method) ;
+        Cursor cursor = database.query(SampleDatabaseHelper.TABLE_USERS, userColumns, SampleDatabaseHelper.USERS_ID + "=?", new String[]{String.valueOf(userId)}, null, null, null);
+
+        //Initialize User Object And Fetch Data From Cursor ;
+        User user = new User();
+
+        // cursor.moveToFirst() Check Cursor :  ValidRecord (true) Or InvalidRecord (false) ;
+        if (cursor.moveToFirst()) {
+            user.setId(cursor.getInt(cursor.getColumnIndex(SampleDatabaseHelper.USERS_ID)));
+            user.setName(cursor.getString(cursor.getColumnIndex(SampleDatabaseHelper.USERS_NAME)));
+            user.setEmail(cursor.getString(cursor.getColumnIndex(SampleDatabaseHelper.USERS_EMAIL)));
+        }
+
+        cursor.close();
+        return user;
+    }
+
+    public List<User> getUsersByName(String userName) {
+        List<User> userList = new ArrayList<>();
+
+        //This Cursor Contains an Query ;
+        // Select All Users From Database , Where name From Table users Equals By userName From Input Of Method) ;
+        Cursor cursor = database.query(SampleDatabaseHelper.TABLE_USERS, userColumns, SampleDatabaseHelper.USERS_NAME + "=?", new String[]{userName}, null, null, null);
+
+        // cursor.moveToFirst() Check Cursor :  ValidRecord (true) Or InvalidRecord (false) ;
+        if (cursor.moveToFirst()) {
+            do {
+                //Initialize User Object And Fetch Data From Cursor ;
+                User user = new User();
+                user.setId(cursor.getInt(cursor.getColumnIndex(SampleDatabaseHelper.USERS_ID)));
+                user.setName(cursor.getString(cursor.getColumnIndex(SampleDatabaseHelper.USERS_NAME)));
+                user.setEmail(cursor.getString(cursor.getColumnIndex(SampleDatabaseHelper.USERS_EMAIL)));
+                //Fill userList With Fetch Data From Cursor ;
+                userList.add(user);
+            }
+            while (cursor.moveToNext());
+            // cursor.moveToNext() Check Cursor :  Valid Next Record (true : Back to Loop) Or Invalid Next Record (false : Stop Loop And Exit) ;
+
+        }
+        cursor.close();
         return userList;
     }
 
@@ -60,7 +106,7 @@ public class User_DataAccess {
 
     }
 
-    public void updateUserById(User user , int userId) {
+    public void updateUserById(User user, int userId) {
         //Set  ContentValues ::  ContentValues Base Is HashMap [key , value] ;
         ContentValues contentValues = new ContentValues();
         //Pass ( Key: USER_NAME)  And  (value: getMethod) ;
@@ -69,7 +115,8 @@ public class User_DataAccess {
         // Update This ContentValues Data intro Database (From Input Of Method) ;
         database.update(SampleDatabaseHelper.TABLE_USERS, contentValues, SampleDatabaseHelper.USERS_ID + "=?", new String[]{String.valueOf(userId)});
     }
-    public void updateUserByName(User user , String userName ) {
+
+    public void updateUserByName(User user, String userName) {
         //Set  ContentValues ::  ContentValues Base Is HashMap [key , value] ;
         ContentValues contentValues = new ContentValues();
         //Pass ( Key: USER_NAME)  And  (value: getMethod) ;
@@ -78,6 +125,35 @@ public class User_DataAccess {
         // Update This ContentValues Data intro Database (From Input Of Method) ;
         database.update(SampleDatabaseHelper.TABLE_USERS, contentValues, SampleDatabaseHelper.USERS_NAME + "=?", new String[]{userName});
     }
+
+    public void deleteUserById(int userId) {
+        // Delete This User From Database (With ID From Input Of Method) ;
+        database.delete(SampleDatabaseHelper.TABLE_USERS, SampleDatabaseHelper.USERS_ID + "=?", new String[]{String.valueOf(userId)});
+    }
+
+    public void deleteUserByName(String userName) {
+        // Delete This User From Database (With userName From Input Of Method) ;
+        database.delete(SampleDatabaseHelper.TABLE_USERS, SampleDatabaseHelper.USERS_NAME + "=?", new String[]{userName});
+    }
+
+    public boolean emptyTable() {
+        boolean booleanCheck;
+        //This Cursor Contains an Query ;
+        // Select All Users From Database ;
+        Cursor cursor = database.query(SampleDatabaseHelper.TABLE_USERS, userColumns, null, null, null, null, null);
+        //Check cursor return Anything ? true HasData , false isEmpty ;
+        // cursor.moveToFirst() Check Cursor :  ValidRecord (true) Or InvalidRecord (false) ;
+        if (cursor.moveToFirst()) {
+            booleanCheck = false;
+
+        } else {
+            booleanCheck = true;
+
+        }
+        cursor.close();
+        return booleanCheck;
+    }
+
 
     public void open() {
         //Preparing And Open Database For Write In Database;

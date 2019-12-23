@@ -21,12 +21,14 @@ public class MainActivity extends AppCompatActivity {
 
         userDataAccess = new User_DataAccess(this);
         userDataAccess.open();
-        userList = userDataAccess.getAllUser();
 
         insertUser("Admin", "Admin@gmail.com");
+        insertUser("User", "User@gmail.com");
+        insertUser("User2", "User2@gmail.com");
+        updateUserById(2,"John","John@gmail.com");
+        updateUserByName("User2","Fredrick","Fredrick@yahoo.com");
+        userList = userDataAccess.getAllUser();
         selectQuery(userList);
-
-
 
     }
 
@@ -59,5 +61,18 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Email:" + user.getEmail());
             }
         }
+    }
+
+    private void updateUserById(int userId ,String userName, String userEmail) {
+        User user = new User();
+        user.setName(userName);
+        user.setEmail(userEmail);
+        userDataAccess.updateUserById(user , userId);
+    }
+    private void updateUserByName(String oldUserName ,String newUserName, String newUserEmail) {
+        User user = new User();
+        user.setName(newUserName);
+        user.setEmail(newUserEmail);
+        userDataAccess.updateUserByName(user , oldUserName);
     }
 }

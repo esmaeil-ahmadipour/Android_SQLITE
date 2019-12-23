@@ -60,6 +60,25 @@ public class User_DataAccess {
 
     }
 
+    public void updateUserById(User user , int userId) {
+        //Set  ContentValues ::  ContentValues Base Is HashMap [key , value] ;
+        ContentValues contentValues = new ContentValues();
+        //Pass ( Key: USER_NAME)  And  (value: getMethod) ;
+        contentValues.put(SampleDatabaseHelper.USERS_NAME, user.getName());
+        contentValues.put(SampleDatabaseHelper.USERS_EMAIL, user.getEmail());
+        // Update This ContentValues Data intro Database (From Input Of Method) ;
+        database.update(SampleDatabaseHelper.TABLE_USERS, contentValues, SampleDatabaseHelper.USERS_ID + "=?", new String[]{String.valueOf(userId)});
+    }
+    public void updateUserByName(User user , String userName ) {
+        //Set  ContentValues ::  ContentValues Base Is HashMap [key , value] ;
+        ContentValues contentValues = new ContentValues();
+        //Pass ( Key: USER_NAME)  And  (value: getMethod) ;
+        contentValues.put(SampleDatabaseHelper.USERS_NAME, user.getName());
+        contentValues.put(SampleDatabaseHelper.USERS_EMAIL, user.getEmail());
+        // Update This ContentValues Data intro Database (From Input Of Method) ;
+        database.update(SampleDatabaseHelper.TABLE_USERS, contentValues, SampleDatabaseHelper.USERS_NAME + "=?", new String[]{userName});
+    }
+
     public void open() {
         //Preparing And Open Database For Write In Database;
         database = sqLiteOpenHelper.getWritableDatabase();

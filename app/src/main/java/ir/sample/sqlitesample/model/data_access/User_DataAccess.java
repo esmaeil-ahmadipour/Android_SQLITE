@@ -136,22 +136,21 @@ public class User_DataAccess {
         database.delete(SampleDatabaseHelper.TABLE_USERS, SampleDatabaseHelper.USERS_NAME + "=?", new String[]{userName});
     }
 
-    public boolean emptyTable() {
-        boolean booleanCheck;
+    public boolean tableIsEmpty() {
+
         //This Cursor Contains an Query ;
         // Select All Users From Database ;
         Cursor cursor = database.query(SampleDatabaseHelper.TABLE_USERS, userColumns, null, null, null, null, null);
-        //Check cursor return Anything ? true HasData , false isEmpty ;
+
         // cursor.moveToFirst() Check Cursor :  ValidRecord (true) Or InvalidRecord (false) ;
         if (cursor.moveToFirst()) {
-            booleanCheck = false;
+            cursor.close();
+            return false;
 
         } else {
-            booleanCheck = true;
-
+            cursor.close();
+            return true;
         }
-        cursor.close();
-        return booleanCheck;
     }
 
 

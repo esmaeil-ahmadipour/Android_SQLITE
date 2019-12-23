@@ -1,6 +1,9 @@
 package ir.sample.sqlitesample;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.List;
 
@@ -11,19 +14,21 @@ import ir.sample.sqlitesample.model.table_object.User;
 public class MainActivity extends AppCompatActivity {
 
     private User_DataAccess userDataAccess;
+    private EditText edtUsername, edtEmail;
+    private Button btnSubmit;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //Open Database ;
         userDataAccess = new User_DataAccess(this);
         userDataAccess.open();
 
         //Insert 5 Records ;
-        prepareInsertData();
-
+        preparingInsertData();
 
         //Update Records by Two Different Methods;
         updateUserById(4, "John", "John@gmail.com");
@@ -37,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         selectAllUsers();
         selectUserById(1);
         selectUserByName("Fredrick");
-
 
     }
 
@@ -54,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    private void prepareInsertData() {
-        if (userDataAccess.emptyTable()) {
-            System.out.println("Prepare Insert Data.");
+    private void preparingInsertData() {
+        if (userDataAccess.tableIsEmpty()) {
+            System.out.println("Preparing Insert Data.");
 
             insertUser("Admin", "Admin@gmail.com");
             insertUser("User1", "User1@gmail.com");
@@ -64,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             insertUser("User3", "User3@gmail.com");
             insertUser("User4", "User4@gmail.com");
         } else
-            System.out.println("Available Data.");
+            System.out.println("Data Is Available.");
     }
 
     private void selectAllUsers() {
@@ -129,5 +133,6 @@ public class MainActivity extends AppCompatActivity {
     private void deleteUserByName(String userName) {
         userDataAccess.deleteUserByName(userName);
     }
+
 
 }
